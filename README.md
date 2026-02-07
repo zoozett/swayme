@@ -1,2 +1,2 @@
 # swayme
-Make confident decisions backed by real opinions.
+AI-powered decision making.

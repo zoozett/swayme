@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwayMe</title>
+    <meta name="description" content="Swayme — move your mood, one sway at a time." />
+
+<!-- Open Graph: 카톡/페북/디스코드 -->
+<meta property="og:title" content="Swayme" />
+<meta property="og:description" content="Move your mood, one sway at a time." />
+<meta property="og:image" content="https://zoozett.github.io/swayme/og.png" />
+<meta property="og:url" content="https://zoozett.github.io/swayme/" />
+<meta property="og:type" content="website" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Swayme" />
+<meta name="twitter:description" content="Move your mood, one sway at a time." />
+<meta name="twitter:image" content="https://zoozett.github.io/swayme/og.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A84FF;
+            --secondary: #5E5CE6;
+            --success: #30D158;
+            --warning: #FF9F0A;
+            --danger: #FF453A;
+            --bg-dark: #000000;
+            --bg-card: #1C1C1E;
+            --bg-elevated: #2C2C2E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #98989D;
+            --border: #38383A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Epilogue', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, var(--primary) 35px, var(--primary) 36px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, var(--secondary) 35px, var(--secondary) 36px);
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        .subscription-badge {
+            padding: 0.5rem 1rem;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pro-badge {
+            background: linear-gradient(135deg, #FFD60A, #FF9F0A);
+            color: #000;
+            border: none;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Decision Input Card */
+        .decision-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(10, 132, 255, 0.05);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Options Container */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-input {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .option-field {
+            flex: 1;
+        }
+
+        .remove-option {
+            padding: 0.75rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .remove-option:hover {
+            background: rgba(255, 69, 58, 0.1);
+            border-color: var(--danger);
+        }
+
+        .add-option {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-elevated);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .add-option:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(10, 132, 255, 0.05);
+        }
+
+        /* Buttons */
+        .primary-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.3);
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            border-color: var(--primary);
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        /* Loading State */
+        .loading-section {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 2rem;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Section */
+        .results-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(94, 92, 230, 0.2));
+            border: 2px solid var(--primary);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .winner-trophy {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .winner-name {
+            font-size: 1.75rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .winner-score {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-result {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-result:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .option-result.winner {
+            border-color: var(--primary);
+            background: rgba(10, 132, 255, 0.05);
+        }
+
+        .option-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .option-result-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .option-result-score {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-bar {
+            height: 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .option-reasoning {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .evidence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .evidence-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .evidence-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .evidence-content {
+            flex: 1;
+        }
+
+        .evidence-content a {
+            color: var(--primary);
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s ease;
+        }
+
+        .evidence-content a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .evidence-source {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .share-label {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-icon {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .share-download .share-icon {
+            color: #30D158;
+        }
+
+        .share-download:hover {
+            background: rgba(48, 209, 88, 0.15);
+        }
+
+        .share-x .share-icon {
+            color: #000000;
+        }
+
+        .share-x:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .share-reddit .share-icon svg {
+            fill: #FF4500;
+        }
+
+        .share-reddit:hover {
+            background: rgba(255, 69, 0, 0.1);
+        }
+
+        .share-instagram .share-icon svg {
+            fill: #E1306C;
+        }
+
+        .share-instagram:hover {
+            background: rgba(225, 48, 108, 0.1);
+        }
+
+        .share-telegram .share-icon svg {
+            fill: #0088cc;
+        }
+
+        .share-telegram:hover {
+            background: rgba(0, 136, 204, 0.1);
+        }
+
+        /* Subscription Page */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, rgba(255, 214, 10, 0.1), rgba(255, 159, 10, 0.1));
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .plan-period {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* History Page */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .history-header h2 {
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .clear-history-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--danger);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: #ff3b30;
+            transform: translateY(-2px);
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-item-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-item-date {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .history-winner {
+            padding: 0.5rem 1rem;
+            background: rgba(10, 132, 255, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .history-empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .history-empty h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-empty p {
+            color: var(--text-secondary);
+        }
+
+        .delete-history-item {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            background: var(--danger);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover .delete-history-item {
+            opacity: 1;
+        }
+
+        .delete-history-item:hover {
+            background: #ff3b30;
+        }
+
+        /* Usage Warning */
+        .usage-warning {
+            background: rgba(255, 159, 10, 0.2);
+            border: 1px solid var(--warning);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--warning);
+        }
+
+        /* Payment Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card-element {
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .card-errors {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .payment-summary {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .payment-summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+
+        .payment-summary-total {
+            font-weight: 700;
+            font-size: 1.25rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .share-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .share-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="showPage('home')">SwayMe</div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="showPage('history')">History</button>
+                <button class="nav-btn" onclick="showPage('subscription')">Upgrade</button>
+                <div class="subscription-badge" id="usageBadge">
+                    Free • <span id="decisionsRemaining">3</span> left
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Home Page -->
+        <div id="homePage" class="page-section active">
+            <!-- Hero -->
+            <div class="hero">
+                <h1>Stop Overthinking.<br>Start Deciding.</h1>
+                <p>Let AI analyze your options with real data and evidence, so you can make confident decisions faster.</p>
+            </div>
+
+            <!-- Input Section -->
+            <div id="inputSection">
+                <div class="decision-card">
+                    <div class="input-group">
+                        <label>What are you deciding?</label>
+                        <input type="text" id="decisionTitle" placeholder="e.g., Which laptop should I buy?">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Additional Context (Optional)</label>
+                        <textarea id="decisionContext" placeholder="Add any details that might help (budget, preferences, constraints...)"></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Your Options</label>
+                        <div class="options-container" id="optionsContainer">
+                            <div class="option-input">
+                                <input type="text" placeholder="Option 1" class="option-field">
+                            </div>
+                            <div class="option-input">
+                                <input type="text" placeholder="Option 2" class="option-field">
+                            </div>
+                        </div>
+                        <div class="add-option" onclick="addOption()">+ Add Another Option</div>
+                    </div>
+
+                    <button class="primary-btn" onclick="analyzeDecision()">
+                        🔍 Analyze My Options
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Section -->
+            <div id="loadingSection" class="loading-section" style="display: none;">
+                <div class="loading-spinner"></div>
+                <h3>Analyzing your options...</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">This might take a few seconds</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2 id="resultsTitle">Your Best Choice</h2>
+                </div>
+
+                <div class="winner-card">
+                    <div class="winner-trophy">🏆</div>
+                    <div class="winner-name" id="winnerName">Option Name</div>
+                    <div class="winner-score" id="winnerScore">95% Match</div>
+                </div>
+
+                <div class="comparison-grid" id="comparisonGrid">
+                    <!-- Results will be inserted here -->
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button class="secondary-btn" onclick="startNewDecision()" style="margin-bottom: 1rem;">
+                        🔄 New Decision
+                    </button>
+                    
+                    <div class="share-label">Share Your Result</div>
+                    
+                    <div class="share-buttons">
+                        <button class="share-btn share-download" onclick="downloadShareImage()">
+                            <div class="share-icon">📸</div>
+                            <div class="share-text">Download</div>
+                        </button>
+                        <button class="share-btn share-x" onclick="shareOnX()">
+                            <div class="share-icon">𝕏</div>
+                            <div class="share-text">X</div>
+                        </button>
+                        <button class="share-btn share-reddit" onclick="shareOnReddit()">
+                            <div class="share-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                    <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+                                </svg>
+                            </div>
+                            <div class="share-text">Reddit</div>
+                        </button>
+                        <button class="share-btn share-instagram" onclick="shareOnInstagram()">
+                            <div class="share-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </div>
+                            <div class="share-text">Instagram</div>
+                        </button>
+                        <button class="share-btn share-telegram" onclick="shareOnTelegram()">
+                            <div class="share-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                                </svg>
+                            </div>
+                            <div class="share-text">Telegram</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div id="historyPage" class="page-section">
+            <div class="history-header">
+                <h2>Decision History</h2>
+                <button class="clear-history-btn" onclick="clearAllHistory()" id="clearHistoryBtn" style="display: none;">
+                    🗑️ Clear All
+                </button>
+            </div>
+            <div id="historyContent">
+                <!-- History items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Subscription Page -->
+        <div id="subscriptionPage" class="page-section">
+            <div class="hero">
+                <h1>Choose Your Plan</h1>
+                <p>Unlock unlimited decisions and premium features</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card" onclick="selectPlan('free')">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">$0</div>
+                    <div class="plan-period">Forever</div>
+                    <ul class="plan-features">
+                        <li>3 decisions per month</li>
+                        <li>Basic AI analysis</li>
+                        <li>Decision history</li>
+                    </ul>
+                    <button class="secondary-btn">Current Plan</button>
+                </div>
+
+                <div class="pricing-card featured" onclick="selectPlan('pro')">
+                    <div class="plan-name">Pro ⭐</div>
+                    <div class="plan-price">$9.99</div>
+                    <div class="plan-period">per month</div>
+                    <ul class="plan-features">
+                        <li>Unlimited decisions</li>
+                        <li>Advanced AI analysis</li>
+                        <li>Real-time data sources</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="primary-btn">Upgrade Now</button>
+                </div>
+
+                <div class="pricing-card" onclick="selectPlan('premium')">
+                    <div class="plan-name">Premium</div>
+                    <div class="plan-price">$19.99</div>
+                    <div class="plan-period">per month</div>
+                    <ul class="plan-features">
+                        <li>Everything in Pro</li>
+                        <li>Team collaboration</li>
+                        <li>Custom AI models</li>
+                        <li>API access</li>
+                        <li>White-label options</li>
+                    </ul>
+                    <button class="primary-btn">Upgrade Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal" onclick="handleModalClick(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Subscribe to <span id="modalPlanName">Pro</span></h3>
+                <button class="modal-close" onclick="closePaymentModal()">×</button>
+            </div>
+
+            <form class="payment-form" onsubmit="handlePayment(event)">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Card Information</label>
+                    <div id="card-element" class="card-element"></div>
+                    <div id="card-errors" class="card-errors"></div>
+                </div>
+
+                <div class="payment-summary">
+                    <div class="payment-summary-row">
+                        <span>Plan</span>
+                        <span id="summaryPlanName">Pro ⭐</span>
+                    </div>
+                    <div class="payment-summary-row payment-summary-total">
+                        <span>Total</span>
+                        <span id="summaryTotal">$9.99/month</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-btn" id="submit-payment">
+                    🔒 Complete Payment
+                </button>
+
+                <p style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-top: 1rem;">
+                    Secure payment powered by Stripe. Cancel anytime.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔑 Enter Your Claude API Key</h3>
+                <button class="modal-close" onclick="closeApiKeyModal()">×</button>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    To get real AI-powered analysis, you need a Claude API key from Anthropic.
+                </p>
+                <a href="https://console.anthropic.com/" target="_blank" style="color: var(--primary); text-decoration: none;">
+                    → Get your API key here
+                </a>
+            </div>
+
+            <div class="input-group">
+                <label>Claude API Key</label>
+                <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." style="font-family: monospace;">
+            </div>
+
+            <button class="primary-btn" onclick="saveApiKey()">
+                💾 Save & Use Real AI
+            </button>
+
+            <button class="secondary-btn" onclick="closeApiKeyModal()" style="margin-top: 0.5rem;">
+                Skip (Use Demo Mode)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let decisionHistory = JSON.parse(localStorage.getItem('decisionHistory') || '[]');
+        let userPlan = localStorage.getItem('userPlan') || 'free';
+        let decisionsLeft = parseInt(localStorage.getItem('decisionsLeft') || '3');
+        let selectedPlan = 'pro';
+        let apiKey = localStorage.getItem('claudeApiKey') || '';
+
+        // Stripe (in production, replace with your actual publishable key)
+        const stripe = null; // Set to null for demo mode
+        let cardElement = null;
+
+        // Initialize
+        updateUsageBadge();
+        renderHistory();
+
+        // Check if API key exists, if not show modal on first analysis
+        let hasShownApiModal = false;
+
+        // API Key Modal Functions
+        function openApiKeyModal() {
+            document.getElementById('apiKeyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('apiKeyModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key && key.startsWith('sk-ant-')) {
+                apiKey = key;
+                localStorage.setItem('claudeApiKey', apiKey);
+                closeApiKeyModal();
+                alert('✅ API key saved! Now you\'ll get real AI analysis.');
+            } else {
+                alert('Please enter a valid Claude API key (starts with sk-ant-)');
+            }
+        }
+
+        // Update usage badge
+        function updateUsageBadge() {
+            const badge = document.getElementById('usageBadge');
+            const remaining = document.getElementById('decisionsRemaining');
+            
+            if (userPlan === 'free') {
+                badge.innerHTML = `Free • <span id="decisionsRemaining">${decisionsLeft}</span> left`;
+                badge.className = 'subscription-badge';
+            } else if (userPlan === 'pro') {
+                badge.innerHTML = 'Pro • Unlimited';
+                badge.className = 'subscription-badge pro-badge';
+            } else if (userPlan === 'premium') {
+                badge.innerHTML = 'Premium • Unlimited';
+                badge.className = 'subscription-badge pro-badge';
+            }
+        }
+
+        // Page Navigation
+        function showPage(page) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            if (page === 'home') {
+                document.getElementById('homePage').classList.add('active');
+            } else if (page === 'history') {
+                document.getElementById('historyPage').classList.add('active');
+                renderHistory();
+            } else if (page === 'subscription') {
+                document.getElementById('subscriptionPage').classList.add('active');
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add option
+        function addOption() {
+            const container = document.getElementById('optionsContainer');
+            const optionCount = container.children.length + 1;
+            
+            if (optionCount > 10) {
+                alert('Maximum 10 options allowed');
+                return;
+            }
+            
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-input';
+            optionDiv.innerHTML = `
+                <input type="text" placeholder="Option ${optionCount}" class="option-field">
+                <button class="remove-option" onclick="removeOption(this)">×</button>
+            `;
+            container.appendChild(optionDiv);
+        }
+
+        // Remove option
+        function removeOption(button) {
+            const container = document.getElementById('optionsContainer');
+            if (container.children.length <= 2) {
+                alert('You need at least 2 options');
+                return;
+            }
+            button.parentElement.remove();
+        }
+
+        // Analyze decision
+        async function analyzeDecision() {
+            const title = document.getElementById('decisionTitle').value.trim();
+            const context = document.getElementById('decisionContext').value.trim();
+            const optionFields = document.querySelectorAll('.option-field');
+            const options = Array.from(optionFields)
+                .map(field => field.value.trim())
+                .filter(option => option.length > 0);
+
+            // Validation
+            if (!title) {
+                alert('Please enter what you\'re deciding');
+                return;
+            }
+
+            if (options.length < 2) {
+                alert('Please enter at least 2 options');
+                return;
+            }
+
+            // Check usage limit
+            if (userPlan === 'free' && decisionsLeft <= 0) {
+                alert('You\'ve used all your free decisions this month. Upgrade to Pro for unlimited decisions!');
+                showPage('subscription');
+                return;
+            }
+
+            // Show API key modal if not set and first time
+            if (!apiKey && !hasShownApiModal) {
+                hasShownApiModal = true;
+                if (confirm('🤖 Want REAL AI analysis?\n\nClick OK to enter your Claude API key for actual AI-powered decisions with web search.\n\nClick Cancel to continue with demo mode.')) {
+                    openApiKeyModal();
+                    return;
+                }
+            }
+
+            // Show loading
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+
+            let results;
+            
+            try {
+                if (apiKey) {
+                    // Real AI Analysis
+                    results = await getRealAIAnalysis(title, context, options);
+                } else {
+                    // Demo mode - consistent hash-based scores
+                    results = generateConsistentResults(title, context, options);
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                alert('Analysis failed. Using demo mode instead.');
+                results = generateConsistentResults(title, context, options);
+            }
+
+            // Update usage
+            if (userPlan === 'free') {
+                decisionsLeft--;
+                localStorage.setItem('decisionsLeft', decisionsLeft);
+                updateUsageBadge();
+            }
+
+            // Save to history
+            saveDecisionToHistory(title, context, options, results);
+
+            // Display results
+            displayResults(title, context, options, results);
+        }
+
+        // Real AI Analysis with Claude API
+        async function getRealAIAnalysis(title, context, options) {
+            const prompt = `You are a decision analysis expert. Analyze these options and provide detailed, evidence-based recommendations.
+
+Decision: ${title}
+${context ? `Context: ${context}` : ''}
+Options: ${options.join(', ')}
+
+For each option, provide:
+1. A score (0-100) based on objective criteria
+2. Clear reasoning
+3. Real evidence with actual sources (use web search if needed)
+
+Respond in JSON format:
+{
+  "options": [
+    {
+      "name": "option name",
+      "score": 85,
+      "reasoning": "detailed reasoning",
+      "evidence": [
+        {
+          "text": "evidence description",
+          "url": "actual URL",
+          "source": "source name"
+        }
+      ]
+    }
+  ]
+}`;
+
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 4096,
+                    messages: [{
+                        role: 'user',
+                        content: prompt
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('API call failed');
+            }
+
+            const data = await response.json();
+            const content = data.content[0].text;
+            
+            // Parse JSON response
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const analysis = JSON.parse(jsonMatch[0]);
+                
+                // Add icons to evidence
+                const iconMap = {
+                    'article': '📰',
+                    'review': '⭐',
+                    'study': '📊',
+                    'forum': '💬',
+                    'video': '📹',
+                    'default': '🔗'
+                };
+                
+                return analysis.options.map(opt => ({
+                    ...opt,
+                    evidence: opt.evidence.map(ev => ({
+                        ...ev,
+                        icon: iconMap[ev.type] || iconMap.default
+                    }))
+                })).sort((a, b) => b.score - a.score);
+            }
+            
+            throw new Error('Invalid response format');
+        }
+
+        // Generate consistent results (demo mode with same scores for same inputs)
+        // Generate consistent results (demo mode with same scores for same inputs)
+        function generateConsistentResults(title, context, options) {
+            // Simple hash function for consistency
+            const hashString = (str) => {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash);
+            };
+
+            const evidenceSources = [
+                { type: 'article', icon: '📰', domain: 'techcrunch.com' },
+                { type: 'review', icon: '⭐', domain: 'cnet.com' },
+                { type: 'forum', icon: '💬', domain: 'reddit.com' },
+                { type: 'study', icon: '📊', domain: 'nature.com' },
+                { type: 'video', icon: '📹', domain: 'youtube.com' }
+            ];
+
+            return options.map((option, index) => {
+                // Generate consistent score based on hash
+                const combinedString = `${title}${context}${option}`;
+                const hash = hashString(combinedString);
+                const score = 65 + (hash % 35); // Score between 65-100
+                
+                // Generate 2-3 evidence items
+                const evidenceCount = 2 + (hash % 2);
+                const evidence = [];
+                
+                for (let i = 0; i < evidenceCount; i++) {
+                    const sourceIndex = (hash + i) % evidenceSources.length;
+                    const source = evidenceSources[sourceIndex];
+                    
+                    // Create search query with FULL context
+                    let searchQuery = title;
+                    if (context) {
+                        searchQuery += ` ${context}`;
+                    }
+                    searchQuery += ` ${option}`;
+                    
+                    const encodedQuery = encodeURIComponent(searchQuery);
+                    
+                    evidence.push({
+                        icon: source.icon,
+                        text: `${source.type} about ${option}`,
+                        url: `https://www.google.com/search?q=${encodedQuery}`,
+                        source: source.domain
+                    });
+                }
+
+                return {
+                    name: option,
+                    score: score,
+                    reasoning: `Based on analysis, ${option} ${
+                        score > 85 ? 'is an excellent choice' :
+                        score > 75 ? 'is a solid option' :
+                        'has potential but consider trade-offs'
+                    }. ${
+                        context ? `Given your context (${context}), ` : ''
+                    }This option ${
+                        score > 80 ? 'aligns well with your requirements' : 'may need careful consideration'
+                    }. ${score > 90 ? 'Highly recommended.' : score > 80 ? 'Good fit overall.' : 'Weigh pros and cons carefully.'}`,
+                    evidence: evidence
+                };
+            }).sort((a, b) => b.score - a.score);
+        }
+
+        // Display results
+        function displayResults(title, context, options, results) {
+            const winner = results[0];
+            
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('winnerName').textContent = winner.name;
+            document.getElementById('winnerScore').textContent = `${winner.score}% Match`;
+
+            const comparisonGrid = document.getElementById('comparisonGrid');
+            comparisonGrid.innerHTML = results.map(result => `
+                <div class="option-result ${result === winner ? 'winner' : ''}">
+                    <div class="option-result-header">
+                        <div class="option-result-name">
+                            ${result === winner ? '🏆 ' : ''}${result.name}
+                        </div>
+                        <div class="option-result-score">${result.score}%</div>
+                    </div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${result.score}%"></div>
+                    </div>
+                    <div class="option-reasoning">${result.reasoning}</div>
+                    
+                    ${result.evidence.length > 0 ? `
+                        <div class="evidence-list">
+                            ${result.evidence.map(ev => `
+                                <div class="evidence-item">
+                                    <div class="evidence-icon">${ev.icon}</div>
+                                    <div class="evidence-content">
+                                        <div>${ev.text}</div>
+                                        <div class="evidence-source">
+                                            <a href="${ev.url}" target="_blank" rel="noopener noreferrer">${ev.source}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            // Hide loading and show results
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // Show warning if running low
+            if (userPlan === 'free' && decisionsLeft <= 1) {
+                const warning = document.createElement('div');
+                warning.className = 'usage-warning';
+                warning.innerHTML = `⚠️ ${decisionsLeft === 1 ? 'Only 1 free decision left' : 'No free decisions left'} this month. <strong>Upgrade to Pro for unlimited!</strong>`;
+                document.getElementById('resultsSection').insertBefore(warning, document.getElementById('resultsSection').firstChild.nextSibling);
+            }
+
+            // Scroll to results
+            setTimeout(() => {
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        // Start new decision
+        function startNewDecision() {
+            // Clear inputs
+            document.getElementById('decisionTitle').value = '';
+            document.getElementById('decisionContext').value = '';
+            
+            // Reset options to 2
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = `
+                <div class="option-input">
+                    <input type="text" placeholder="Option 1" class="option-field">
+                </div>
+                <div class="option-input">
+                    <input type="text" placeholder="Option 2" class="option-field">
+                </div>
+            `;
+            
+            // Hide results and show input
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('inputSection').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Download share image
+        async function downloadShareImage() {
+            const title = document.getElementById('resultsTitle').textContent;
+            const winner = document.getElementById('winnerName').textContent;
+            const score = document.getElementById('winnerScore').textContent;
+            
+            // Load html2canvas library if not already loaded
+            if (typeof html2canvas === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                document.head.appendChild(script);
+                
+                await new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                });
+            }
+            
+            // Create a clean share card
+            const shareCard = document.createElement('div');
+            shareCard.style.cssText = `
+                position: fixed;
+                left: -9999px;
+                top: 0;
+                width: 1080px;
+                background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+                padding: 80px;
+                font-family: 'Epilogue', -apple-system, BlinkMacSystemFont, sans-serif;
+            `;
+            
+            shareCard.innerHTML = `
+                <div style="background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(10, 132, 255, 0.3); border-radius: 40px; padding: 60px; backdrop-filter: blur(10px);">
+                    <!-- Header -->
+                    <div style="text-align: center; margin-bottom: 50px;">
+                        <div style="font-size: 48px; font-weight: 900; background: linear-gradient(135deg, #0A84FF, #5E5CE6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px;">
+                            SwayMe
+                        </div>
+                        <div style="color: rgba(255, 255, 255, 0.5); font-size: 24px;">
+                            Stop Overthinking. Start Deciding.
+                        </div>
+                    </div>
+                    
+                    <!-- Decision Title -->
+                    <div style="text-align: center; margin-bottom: 50px;">
+                        <div style="color: rgba(255, 255, 255, 0.6); font-size: 20px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+                            MY DECISION
+                        </div>
+                        <div style="color: #FFFFFF; font-size: 36px; font-weight: 700; line-height: 1.3;">
+                            ${title}
+                        </div>
+                    </div>
+                    
+                    <!-- Winner Card -->
+                    <div style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(94, 92, 230, 0.2)); border: 3px solid #0A84FF; border-radius: 30px; padding: 50px; text-align: center; margin-bottom: 50px;">
+                        <div style="font-size: 80px; margin-bottom: 20px;">🏆</div>
+                        <div style="color: rgba(255, 255, 255, 0.6); font-size: 20px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+                            BEST CHOICE
+                        </div>
+                        <div style="color: #FFFFFF; font-size: 48px; font-weight: 900; margin-bottom: 15px;">
+                            ${winner}
+                        </div>
+                        <div style="font-size: 36px; font-weight: 700; background: linear-gradient(135deg, #0A84FF, #5E5CE6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                            ${score}
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div style="text-align: center; color: rgba(255, 255, 255, 0.4); font-size: 18px;">
+                        AI-powered decision analysis • zoozett.github.io/swayme
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(shareCard);
+            
+            try {
+                // Generate canvas
+                const canvas = await html2canvas(shareCard, {
+                    backgroundColor: null,
+                    scale: 2,
+                    logging: false,
+                    width: 1080,
+                    height: shareCard.offsetHeight
+                });
+                
+                // Convert to blob and download
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().getTime();
+                    link.download = `swayme-decision-${timestamp}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                });
+                
+            } catch (error) {
+                console.error('Error generating image:', error);
+                alert('Sorry, there was an error generating the image. Please try again.');
+            } finally {
+                document.body.removeChild(shareCard);
+            }
+        }
+
+        // Share on X (Twitter)
+        function shareOnX() {
+            const title = document.getElementById('resultsTitle').textContent;
+            const winner = document.getElementById('winnerName').textContent;
+            const score = document.getElementById('winnerScore').textContent;
+            
+            const text = `I just used SwayMe to decide: "${title}"\n\nBest choice: ${winner} (${score})\n\nStop overthinking, start deciding! 🎯`;
+            const hashtags = 'SwayMe,DecisionMaking,AI';
+            const url = 'https://zoozett.github.io/swayme/';
+            
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&hashtags=${hashtags}&url=${encodeURIComponent(url)}`;
+            
+            window.open(twitterUrl, '_blank', 'width=550,height=420');
+        }
+
+        // Share on Reddit
+        function shareOnReddit() {
+            const title = document.getElementById('resultsTitle').textContent;
+            const winner = document.getElementById('winnerName').textContent;
+            const score = document.getElementById('winnerScore').textContent;
+            
+            const postTitle = `I used AI to decide: ${title}`;
+            const postText = `Just used SwayMe to analyze my options.\n\nBest choice: **${winner}** (${score})\n\nIt compared all my options with real data and evidence. Pretty cool tool for anyone who overthinks decisions!\n\nStop overthinking, start deciding! 🎯`;
+            const url = 'https://zoozett.github.io/swayme/';
+            
+            const redditUrl = `https://reddit.com/submit?title=${encodeURIComponent(postTitle)}&text=${encodeURIComponent(postText + '\n\n' + url)}`;
+            
+            window.open(redditUrl, '_blank');
+        }
+
+        // Share on Instagram (download image first)
+        async function shareOnInstagram() {
+            const title = document.getElementById('resultsTitle').textContent;
+            const winner = document.getElementById('winnerName').textContent;
+            const score = document.getElementById('winnerScore').textContent;
+            
+            const text = `I used SwayMe to decide: "${title}"\n\nBest choice: ${winner} (${score})\n\nStop overthinking, start deciding! 🎯\n\nhttps://zoozett.github.io/swayme/`;
+            
+            // Try to use Web Share API if available (works on mobile)
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'My SwayMe Decision',
+                        text: text,
+                        url: 'https://zoozett.github.io/swayme/'
+                    });
+                    return;
+                } catch (err) {
+                    console.log('Share cancelled or failed');
+                }
+            }
+            
+            // Fallback: Open Instagram app with deep link (mobile)
+            const instagramUrl = `instagram://sharesheet?text=${encodeURIComponent(text)}`;
+            window.location.href = instagramUrl;
+            
+            // If Instagram app doesn't open, show download option
+            setTimeout(() => {
+                if (confirm('Instagram app not found. Would you like to download the image instead?')) {
+                    downloadShareImage();
+                }
+            }, 1500);
+        }
+
+        // Share on Telegram
+        function shareOnTelegram() {
+            const title = document.getElementById('resultsTitle').textContent;
+            const winner = document.getElementById('winnerName').textContent;
+            const score = document.getElementById('winnerScore').textContent;
+            
+            const text = `🎯 I just used SwayMe to decide: "${title}"\n\n🏆 Best choice: ${winner} (${score})\n\nStop overthinking, start deciding!\n\nhttps://zoozett.github.io/swayme/`;
+            
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent('https://zoozett.github.io/swayme/')}&text=${encodeURIComponent(text)}`;
+            
+            window.open(telegramUrl, '_blank');
+        }
+
+        // Share on Discord
+        function shareOnDiscord() {
+            const title = document.getElementById('resultsTitle').textContent;
+            const winner = document.getElementById('winnerName').textContent;
+            const score = document.getElementById('winnerScore').textContent;
+            
+            const text = `🎯 **I just used SwayMe to decide:** "${title}"\n\n🏆 **Best choice:** ${winner} (${score})\n\nStop overthinking, start deciding!\n\n<https://zoozett.github.io/swayme/>`;
+            
+            // Copy to clipboard and show instructions
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Message copied to clipboard!\n\nNow:\n1. Open Discord\n2. Go to any channel or DM\n3. Paste (Ctrl+V or Cmd+V)\n4. Send!');
+            }).catch(() => {
+                // Fallback if clipboard fails
+                prompt('Copy this message and paste it in Discord:', text);
+            });
+        }
+
+        // Save to history
+        function saveDecisionToHistory(title, context, options, results) {
+            const winner = results[0];
+            const decision = {
+                title,
+                context,
+                options: options,
+                results,
+                winner: winner.name,
+                winnerScore: winner.score,
+                date: new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+
+            decisionHistory.push(decision);
+            localStorage.setItem('decisionHistory', JSON.stringify(decisionHistory));
+        }
+
+        // Render history
+        function renderHistory() {
+            const content = document.getElementById('historyContent');
+            const clearBtn = document.getElementById('clearHistoryBtn');
+            
+            if (decisionHistory.length === 0) {
+                content.innerHTML = `
+                    <div class="history-empty">
+                        <div class="history-empty-icon">📋</div>
+                        <h3>No decisions yet</h3>
+                        <p>Your decision history will appear here</p>
+                        <button class="primary-btn" style="max-width: 300px; margin: 1.5rem auto 0;" onclick="showPage('home')">
+                            Make Your First Decision
+                        </button>
+                    </div>
+                `;
+                clearBtn.style.display = 'none';
+                return;
+            }
+
+            clearBtn.style.display = 'block';
+
+            const html = [...decisionHistory].reverse().map((decision, index) => {
+                const originalIndex = decisionHistory.length - 1 - index;
+                return `
+                    <div class="history-item" onclick="viewHistoryDecision(${originalIndex})">
+                        <button class="delete-history-item" onclick="event.stopPropagation(); deleteHistoryItem(${originalIndex})">🗑️</button>
+                        <div class="history-item-header">
+                            <div>
+                                <div class="history-item-title">${decision.title}</div>
+                                <div class="history-item-date">${decision.date}</div>
+                            </div>
+                            <div class="history-winner">
+                                ${decision.winner}
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                            Compared ${decision.options.length} options • ${decision.winner} won with ${decision.winnerScore}% confidence
+                        </p>
+                    </div>
+                `;
+            }).join('');
+
+            content.innerHTML = html;
+        }
+
+        // Delete single history item
+        function deleteHistoryItem(index) {
+            if (confirm('Delete this decision from history?')) {
+                decisionHistory.splice(index, 1);
+                localStorage.setItem('decisionHistory', JSON.stringify(decisionHistory));
+                renderHistory();
+            }
+        }
+
+        // Clear all history
+        function clearAllHistory() {
+            if (confirm('Are you sure you want to delete all your decision history? This cannot be undone.')) {
+                decisionHistory = [];
+                localStorage.setItem('decisionHistory', JSON.stringify(decisionHistory));
+                renderHistory();
+            }
+        }
+
+        // View history decision
+        function viewHistoryDecision(index) {
+            const decision = decisionHistory[index];
+            showPage('home');
+            
+            // Display historical result
+            displayResults(decision.title, decision.context, decision.options, decision.results);
+            
+            // Scroll to top first, then to results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        // Select plan
+        function selectPlan(plan) {
+            if (plan === 'free') {
+                alert('You\'re already on the Free plan!');
+                return;
+            }
+
+            selectedPlan = plan;
+            const planNames = { pro: 'Pro ⭐', premium: 'Premium 💎' };
+            const planPrices = { pro: '$9.99', premium: '$19.99' };
+
+            document.getElementById('modalPlanName').textContent = planNames[plan];
+            document.getElementById('summaryPlanName').textContent = planNames[plan];
+            document.getElementById('summaryTotal').textContent = planPrices[plan] + '/month';
+
+            openPaymentModal();
+        }
+
+        // Open payment modal
+        function openPaymentModal() {
+            document.getElementById('paymentModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize card element only if Stripe is available
+            if (stripe && !cardElement) {
+                try {
+                    const elements = stripe.elements();
+                    cardElement = elements.create('card', {
+                        style: {
+                            base: {
+                                color: '#FFFFFF',
+                                fontFamily: 'Epilogue, sans-serif',
+                                fontSize: '16px',
+                                '::placeholder': {
+                                    color: '#98989D',
+                                },
+                            },
+                            invalid: {
+                                color: '#FF453A',
+                            },
+                        },
+                    });
+                    cardElement.mount('#card-element');
+
+                    cardElement.on('change', function(event) {
+                        const displayError = document.getElementById('card-errors');
+                        if (event.error) {
+                            displayError.textContent = event.error.message;
+                        } else {
+                            displayError.textContent = '';
+                        }
+                    });
+                } catch (error) {
+                    console.log('Demo mode: Card element not available');
+                    document.getElementById('card-element').innerHTML = '<p style="color: var(--text-secondary); padding: 1rem; text-align: center;">Demo Mode - Enter your email and click "Complete Payment" to simulate upgrade</p>';
+                }
+            } else if (!stripe) {
+                // Demo mode message
+                document.getElementById('card-element').innerHTML = '<p style="color: var(--text-secondary); padding: 1rem; text-align: center;">Demo Mode - Enter your email and click "Complete Payment" to simulate upgrade</p>';
+            }
+        }
+
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Handle modal click (close on backdrop click)
+        function handleModalClick(event) {
+            if (event.target.id === 'paymentModal') {
+                closePaymentModal();
+            }
+        }
+
+        // Handle payment
+        function handlePayment(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+
+            const submitButton = document.getElementById('submit-payment');
+            submitButton.disabled = true;
+            submitButton.textContent = '⏳ Processing...';
+
+            // Simulate payment processing (2 seconds)
+            setTimeout(() => {
+                // Success!
+                userPlan = selectedPlan;
+                decisionsLeft = 999;
+                localStorage.setItem('userPlan', userPlan);
+                localStorage.setItem('decisionsLeft', decisionsLeft);
+                updateUsageBadge();
+                
+                closePaymentModal();
+                submitButton.disabled = false;
+                submitButton.textContent = '🔒 Complete Payment';
+                
+                // Show success message
+                const planName = selectedPlan === 'pro' ? 'Pro ⭐' : 'Premium 💎';
+                alert(`🎉 Welcome to SwayMe ${planName}!\n\nYou now have unlimited decisions and premium features!\n\nA confirmation email has been sent to ${email}.\n\nNote: This is a demo. In production, payment would be processed through Stripe.`);
+                
+                // Scroll to top and navigate home
+                showPage('home');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
